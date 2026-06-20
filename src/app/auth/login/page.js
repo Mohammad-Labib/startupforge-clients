@@ -2,9 +2,9 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { Card, Button, Link, TextField, Label, InputGroup, Input } from "@heroui/react";
+import { Card, Button, Link } from "@heroui/react"; 
 import { Eye, EyeSlash, At, ShieldKeyhole } from "@gravity-ui/icons";
-import { signIn } from "@/lib/auth-client"; // better-auth এর signIn মেথড ইমপোর্ট করা হলো
+import { signIn } from "@/lib/auth-client"; 
 
 export default function LoginPage() {
     const router = useRouter();
@@ -29,22 +29,19 @@ export default function LoginPage() {
         setIsLoading(true);
 
         try {
-            // better-auth এর signIn মেthod ব্যবহার করে লগইন হ্যান্ডেলিং
             const res = await signIn.email({
                 email: email.trim(),
                 password: password,
-                callbackURL: "/", // লগইন সফল হলে রিডাইরেক্ট পাথ
+                callbackURL: "/", 
             });
 
             if (res?.error) {
-                // পাসওয়ার্ড বা ইমেইল ভুল হলে সার্ভারের পাঠানো মেসেজ দেখাবে
                 setError(res.error.message || "Invalid email or password.");
             } else {
                 setSuccess("Logged in successfully! Welcome back.");
                 setEmail("");
                 setPassword("");
 
-                // ২ সেকেন্ড পর হোম পেজে রিডাইরেক্ট
                 setTimeout(() => {
                     router.push("/");
                 }, 2000);
@@ -71,47 +68,55 @@ export default function LoginPage() {
                 <form onSubmit={handleLogin} className="flex flex-col gap-5">
 
                     {/* Email Field */}
-                    <TextField isRequired name="email" type="email" className="flex flex-col gap-1.5">
-                        <Label className="text-sm font-medium text-zinc-700 dark:text-zinc-300">Email Address</Label>
-                        <InputGroup className="flex items-center gap-2 border border-zinc-200 dark:border-zinc-800 rounded-xl px-3 bg-zinc-50 dark:bg-zinc-900 focus-within:border-zinc-400 dark:focus-within:border-zinc-600 transition-colors">
-                            <At className="text-zinc-400 pointer-events-none" size={16} />
-                            <Input
+                    <div className="flex flex-col gap-1.5">
+                        <label className="text-sm font-medium text-zinc-700 dark:text-zinc-300">
+                            Email Address
+                        </label>
+                        {/* Custom Input Wrapper for Icon */}
+                        <div className="relative flex items-center">
+                            <At className="absolute left-3 text-zinc-400 pointer-events-none" size={16} />
+                            <input
+                                required
+                                type="email"
                                 placeholder="you@example.com"
                                 value={email}
                                 onChange={(e) => setEmail(e.target.value)}
-                                className="w-full bg-transparent py-2 text-sm outline-none border-none text-zinc-900 dark:text-zinc-100"
+                                className="w-full pl-10 pr-3 py-2.5 text-sm rounded-xl border border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-900 text-zinc-900 dark:text-zinc-100 outline-none focus:border-zinc-400 dark:focus:border-zinc-600 transition-colors"
                             />
-                        </InputGroup>
-                    </TextField>
+                        </div>
+                    </div>
 
                     {/* Password Field */}
-                    <TextField isRequired name="password" className="flex flex-col gap-1.5">
+                    <div className="flex flex-col gap-1.5">
                         <div className="flex items-center justify-between">
-                            <Label className="text-sm font-medium text-zinc-700 dark:text-zinc-300">Password</Label>
-                            {/* ফোরগট পাসওয়ার্ড অপশন (প্রয়োজন হলে রাখতে পারেন) */}
+                            <label className="text-sm font-medium text-zinc-700 dark:text-zinc-300">
+                                Password
+                            </label>
                             <Link href="/forgot-password" className="text-xs text-zinc-500 hover:text-zinc-900 dark:hover:text-zinc-100 underline">
                                 Forgot password?
                             </Link>
                         </div>
-                        <InputGroup className="flex items-center gap-2 border border-zinc-200 dark:border-zinc-800 rounded-xl px-3 bg-zinc-50 dark:bg-zinc-900 focus-within:border-zinc-400 dark:focus-within:border-zinc-600 transition-colors">
-                            <ShieldKeyhole className="text-zinc-400 pointer-events-none" size={16} />
-                            <Input
+                        {/* Custom Input Wrapper for Password Icons */}
+                        <div className="relative flex items-center">
+                            <ShieldKeyhole className="absolute left-3 text-zinc-400 pointer-events-none" size={16} />
+                            <input
+                                required
                                 type={isVisible ? "text" : "password"}
                                 placeholder="Enter your password"
                                 value={password}
                                 onChange={(e) => setPassword(e.target.value)}
-                                className="w-full bg-transparent py-2 text-sm outline-none border-none text-zinc-900 dark:text-zinc-100"
+                                className="w-full pl-10 pr-10 py-2.5 text-sm rounded-xl border border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-900 text-zinc-900 dark:text-zinc-100 outline-none focus:border-zinc-400 dark:focus:border-zinc-600 transition-colors"
                             />
                             <button
-                                className="focus:outline-none text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-200 transition"
+                                className="absolute right-3 focus:outline-none text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-200 transition"
                                 type="button"
                                 onClick={toggleVisibility}
                                 aria-label="toggle password visibility"
                             >
                                 {isVisible ? <EyeSlash size={18} /> : <Eye size={18} />}
                             </button>
-                        </InputGroup>
-                    </TextField>
+                        </div>
+                    </div>
 
                     {/* Dynamic Status Badges */}
                     {error && (
@@ -129,7 +134,6 @@ export default function LoginPage() {
                     {/* Action Button */}
                     <Button
                         type="submit"
-                        color="primary"
                         className="w-full font-semibold rounded-xl text-sm h-12 bg-zinc-900 hover:bg-zinc-800 dark:bg-zinc-100 dark:hover:bg-zinc-200 text-white dark:text-black transition-colors"
                         isLoading={isLoading}
                         isDisabled={isLoading}
