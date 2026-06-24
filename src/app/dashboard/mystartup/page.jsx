@@ -1,6 +1,8 @@
 "use client"
 
+import { createFounder } from '@/lib/actions/founders';
 import React, { useState } from 'react';
+import toast from 'react-hot-toast'; 
 
 export default function MyStartupPage() {
   const [formData, setFormData] = useState({
@@ -26,12 +28,60 @@ export default function MyStartupPage() {
     }
   };
 
-  const handleSubmit = (e) => {
+  // প্রোফাইল সেভ করার জন্য
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("Submitted Data:", { ...formData, logoFile });
+    setIsUploading(true);
+
+    try {
+      // 🚀 এখানে FormData ব্যবহার করে 'payload' তৈরি করা হয়েছে
+      const payload = new FormData();
+      
+      // পেলোডের ভেতর ফর্মের সব টেক্সট ডেটা যোগ করা হচ্ছে
+      payload.append('startupName', formData.startupName);
+      payload.append('industry', formData.industry);
+      payload.append('description', formData.description);
+      payload.append('fundingStage', formData.fundingStage);
+      payload.append('founderEmail', formData.founderEmail);
+      
+      // পেলোডের ভেতর লোগো ফাইলটি যোগ করা হচ্ছে (যদি ইউজার সিলেক্ট করে)
+      if (logoFile) {
+        payload.append('logoFile', logoFile); 
+      }
+
+      // কনসোলে চেক করার জন্য (FormData সরাসরি দেখা যায় না, তাই entries দেখতে হয়)
+      console.log("Submitting Payload:");
+      for (let [key, value] of payload.entries()) {
+        console.log(`${key}:`, value);
+      }
+
+      // সার্ভার অ্যাকশনে 'payload' পাঠানো হচ্ছে
+      const res = await createFounder(payload); 
+      
+      if (res?.insertedId) {
+        toast.success("Founder profile successfully completed!"); 
+        
+        // সফলভাবে সেভ হওয়ার পর ফর্ম রিসেট
+        setFormData({
+          startupName: '',
+          industry: '',
+          description: '',
+          fundingStage: '',
+          founderEmail: '',
+        });
+        setLogoFile(null);
+      } else {
+        toast.error("Something went wrong on the server!"); 
+      }
+    } catch (error) {
+      console.error(error);
+      toast.error("Failed to save profile. Is the server running?"); 
+    } finally {
+      setIsUploading(false);
+    }
   };
 
- 
+  // ফর্মের ডেটা মুছে ফেলার জন্য (Cancel Button)
   const handleCancel = () => {
     setFormData({
       startupName: '',
@@ -41,11 +91,11 @@ export default function MyStartupPage() {
       founderEmail: '',
     });
     setLogoFile(null);
+    toast('Form cleared', { icon: '🧹' }); 
   };
 
   return (
     <div className="flex min-h-screen items-center justify-center p-4 w-250">
-      
       <div className="w-full p-4 bg-white ">
         
         <div className="border-b border-slate-100 pb-5 mb-6">
@@ -111,7 +161,7 @@ export default function MyStartupPage() {
             </div>
           </div>
 
-          {/*  Industry */}
+          {/* ৩. Industry */}
           <div className="grid grid-cols-1 md:grid-cols-4 gap-2 items-start">
             <label className="text-sm font-bold text-slate-800 md:pt-3">Industry</label>
             <div className="md:col-span-3">
@@ -127,7 +177,7 @@ export default function MyStartupPage() {
             </div>
           </div>
 
-          {/* Description */}
+          {/* ৪. Description */}
           <div className="grid grid-cols-1 md:grid-cols-4 gap-2 items-start">
             <label className="text-sm font-bold text-slate-800 md:pt-3">Description</label>
             <div className="md:col-span-3">
@@ -143,7 +193,7 @@ export default function MyStartupPage() {
             </div>
           </div>
 
-          {/*  Funding Stage */}
+          {/* ৫. Funding Stage */}
           <div className="grid grid-cols-1 md:grid-cols-4 gap-2 items-start">
             <label className="text-sm font-bold text-slate-800 md:pt-3">Funding Stage</label>
             <div className="md:col-span-3">
@@ -164,7 +214,7 @@ export default function MyStartupPage() {
             </div>
           </div>
 
-          {/*  Founder Email */}
+          {/* ৬. Founder Email */}
           <div className="grid grid-cols-1 md:grid-cols-4 gap-2 items-start">
             <label className="text-sm font-bold text-slate-800 md:pt-3">Founder Email</label>
             <div className="md:col-span-3">
@@ -185,7 +235,6 @@ export default function MyStartupPage() {
             <div className="hidden md:block"></div>
             <div className="md:col-span-3 flex justify-end items-center gap-3">
               
-            
               <button
                 type="button"
                 onClick={handleCancel}
@@ -194,12 +243,12 @@ export default function MyStartupPage() {
                 Cancel
               </button>
 
-           
               <button
                 type="submit"
-                className="px-6 py-2.5 bg-slate-900 hover:bg-slate-800 text-white font-bold text-sm rounded-xl shadow-sm transition-all"
+                disabled={isUploading}
+                className="px-6 py-2.5 bg-slate-900 hover:bg-slate-800 text-white font-bold text-sm rounded-xl shadow-sm transition-all disabled:opacity-50"
               >
-                Save Profile
+                {isUploading ? "Saving..." : "Save Profile"}
               </button>
 
             </div>
