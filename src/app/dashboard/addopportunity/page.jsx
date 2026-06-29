@@ -1,7 +1,7 @@
 "use client"
 
 import React, { useState } from 'react';
-import { Input, Select, SelectItem, Button } from "@heroui/react";
+import { Input, Select, Button } from "@heroui/react"; // 👈 SelectItem বাদ দেওয়া হয়েছে
 import { Briefcase, Check, CircleXmark } from "@gravity-ui/icons";
 import { createOpportunity } from '@/lib/actions/opportunities';
 import toast from 'react-hot-toast';
@@ -9,7 +9,7 @@ import toast from 'react-hot-toast';
 export default function OpportunityForm() {
   const [formData, setFormData] = useState({
     roleTitle: '',
-    requiredSkills: '', // কমা দিয়ে আলাদা করা স্কিল (যেমন: React, Node, Python)
+    requiredSkills: '', 
     workType: '',
     commitmentLevel: '',
     deadline: '',
@@ -30,7 +30,6 @@ export default function OpportunityForm() {
     e.preventDefault();
     setIsSubmitting(true);
 
-    // স্কিলগুলোকে অ্যারেতে রূপান্তর করে ক্লিন করা (ঐচ্ছিক কিন্তু ডাটাবেজের জন্য ভালো)
     const processedData = {
       ...formData,
       requiredSkills: formData.requiredSkills.split(',').map(skill => skill.trim()).filter(Boolean),
@@ -41,7 +40,7 @@ export default function OpportunityForm() {
 
       if (res?.success) {
         toast.success("Opportunity posted successfully!");
-        // ফর্ম রিসেট
+        
         setFormData({
           roleTitle: '',
           requiredSkills: '',
@@ -131,9 +130,9 @@ export default function OpportunityForm() {
           isRequired
         >
           {workTypes.map((type) => (
-            <SelectItem key={type.value} value={type.value}>
+            <option key={type.value} value={type.value} className="text-black dark:text-white bg-white dark:bg-zinc-800">
               {type.label}
-            </SelectItem>
+            </option>
           ))}
         </Select>
 
@@ -148,9 +147,9 @@ export default function OpportunityForm() {
           isRequired
         >
           {commitmentLevels.map((level) => (
-            <SelectItem key={level.value} value={level.value}>
+            <option key={level.value} value={level.value} className="text-black dark:text-white bg-white dark:bg-zinc-800">
               {level.label}
-            </SelectItem>
+            </option>
           ))}
         </Select>
 

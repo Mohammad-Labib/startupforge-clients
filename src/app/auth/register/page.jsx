@@ -43,19 +43,18 @@ export default function RegisterPage() {
         setError("");
         setSuccess("");
 
-        // ১. পাসওয়ার্ড কমপক্ষে ৬ ডিজিট হতে হবে
         if (password.length < 6) {
             setError("Password must be at least 6 characters long.");
-            return; // শর্ত না মিললে কোড এখানেই থেমে যাবে, ডাটাবেজে যাবে না
+            return; 
         }
 
-        // ২. পাসওয়ার্ডে কমপক্ষে ১টি Uppercase (বড় হাতের) অক্ষর থাকতে হবে
+      
         if (!/[A-Z]/.test(password)) {
             setError("Password must contain at least one uppercase letter (A-Z).");
             return;
         }
 
-        // ৩. পাসওয়ার্ডে কমপক্ষে ১টি Lowercase (ছোট হাতের) অক্ষর থাকতে হবে
+      
         if (!/[a-z]/.test(password)) {
             setError("Password must contain at least one lowercase letter (a-z).");
             return;
@@ -64,7 +63,7 @@ export default function RegisterPage() {
         setIsLoading(true);
 
         try {
-            // better-auth এর signUp.email
+       
             const res = await signUp.email({
                 email: email.trim(),
                 password: password,
@@ -80,13 +79,13 @@ export default function RegisterPage() {
             } else {
                 setSuccess("Account created successfully! Redirecting...");
 
-                // ইনপুট ফিল্ড রিসেট
+             
                 setName("");
                 setEmail("");
                 setPassword("");
                 setImage(null);
 
-                // ২ সেকেন্ড পর হোম পেজে রিডাইরেক্ট
+        
                 setTimeout(() => {
                     router.push("/");
                 }, 2000);

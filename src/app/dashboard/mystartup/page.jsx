@@ -3,8 +3,13 @@
 import { createFounder } from '@/lib/actions/founders';
 import React, { useState } from 'react';
 import toast from 'react-hot-toast'; 
+// 🚀 ১. useRouter ইমপোর্ট করা হয়েছে
+import { useRouter } from 'next/navigation';
 
 export default function MyStartupPage() {
+  // 🚀 ২. রাউটার হুক কল করা হয়েছে
+  const router = useRouter();
+
   const [formData, setFormData] = useState({
     startupName: '',
     industry: '',
@@ -34,28 +39,23 @@ export default function MyStartupPage() {
     setIsUploading(true);
 
     try {
-      // 🚀 এখানে FormData ব্যবহার করে 'payload' তৈরি করা হয়েছে
       const payload = new FormData();
       
-      // পেলোডের ভেতর ফর্মের সব টেক্সট ডেটা যোগ করা হচ্ছে
       payload.append('startupName', formData.startupName);
       payload.append('industry', formData.industry);
       payload.append('description', formData.description);
       payload.append('fundingStage', formData.fundingStage);
       payload.append('founderEmail', formData.founderEmail);
       
-      // পেলোডের ভেতর লোগো ফাইলটি যোগ করা হচ্ছে (যদি ইউজার সিলেক্ট করে)
       if (logoFile) {
         payload.append('logoFile', logoFile); 
       }
 
-      // কনসোলে চেক করার জন্য (FormData সরাসরি দেখা যায় না, তাই entries দেখতে হয়)
       console.log("Submitting Payload:");
       for (let [key, value] of payload.entries()) {
         console.log(`${key}:`, value);
       }
 
-      // সার্ভার অ্যাকশনে 'payload' পাঠানো হচ্ছে
       const res = await createFounder(payload); 
       
       if (res?.insertedId) {
@@ -70,6 +70,10 @@ export default function MyStartupPage() {
           founderEmail: '',
         });
         setLogoFile(null);
+
+        
+        router.push('/dashboard'); 
+        
       } else {
         toast.error("Something went wrong on the server!"); 
       }
@@ -81,7 +85,7 @@ export default function MyStartupPage() {
     }
   };
 
-  // ফর্মের ডেটা মুছে ফেলার জন্য (Cancel Button)
+
   const handleCancel = () => {
     setFormData({
       startupName: '',
@@ -205,11 +209,11 @@ export default function MyStartupPage() {
                 required
               >
                 <option value="" disabled>Select Funding Stage</option>
-                <option value="Idea">Idea / Bootstrapped</option>
-                <option value="Pre-Seed">Pre-Seed</option>
-                <option value="Seed">Seed</option>
-                <option value="Series A">Series A</option>
-                <option value="Series B+">Series B+</option>
+                <option value="Idea">Bootstrapped</option>
+                <option value="Pre-Seed">Web Devloper</option>
+                <option value="Seed">UI/UX digner</option>
+                <option value="Series A">Software Enginnering</option>
+                <option value="Series B+">Junior Wbe Devloper</option>
               </select>
             </div>
           </div>
