@@ -13,14 +13,14 @@ function Navbar() {
 
   const handleLogOut = async () => {
     await signOut();
-    setIsMenuOpen(false); // লগআউট হলে মোবাইল মেনু বন্ধ করার জন্য
+    setIsMenuOpen(false); 
   };
 
   return (
     <nav className="sticky top-0 z-40 w-full bg-[#b06a44] text-white">
       <header className="mx-auto flex h-20 max-w-7xl items-center justify-between px-6">
 
-        {/* বাম পাশ: হ্যামবার্গার মেনু এবং লোগো */}
+     
         <div className="flex items-center gap-4">
           <Button
             isIconOnly
@@ -32,24 +32,17 @@ function Navbar() {
             {isMenuOpen ? <Xmark size={24} /> : <Bars size={24} />}
           </Button>
 
-          {/* StartupForge লোগো (প্রয়োজন হলে কমেন্ট আউট সরিয়ে নিতে পারেন) */}
+         
           <Link href="/" className="flex items-center gap-3 hover:opacity-90">
-            <div className="relative h-12 w-12 overflow-hidden rounded-full border-2 border-white/20 shadow-sm flex items-center justify-center bg-white/10">
-              <Image 
-                src="/assist/logo.jpeg" 
-                alt="StartupForge Logo"
-                fill 
-                priority
-                className="object-cover rounded-full" 
-              />
+            <div>
+              <h1 className="font-bold text-3xl text-white">
+                Startup<span className="text-4xl text-pink-600">Forge</span>
+              </h1>
             </div>
-            <span className="text-xl font-bold tracking-wide text-white hidden sm:block">
-              StartupForge
-            </span>
           </Link>
         </div>
 
-        {/* মাঝখান: ডেক্সটপ নেভিগেশন লিংক */}
+      
         <ul className="hidden items-center gap-8 md:flex font-medium text-[15px]">
           <li>
             <Link href="/" className="text-white hover:opacity-80">
@@ -68,7 +61,7 @@ function Navbar() {
           </li>
         </ul>
 
-        {/* ডান পাশ: ডেক্সটপ ইউজার স্টেট (লগইন/লগআউট ও প্রোফাইল ছবি) */}
+     
         <div className="hidden md:flex items-center gap-6">
           {user ? (
             <>
@@ -101,7 +94,7 @@ function Navbar() {
           )}
         </div>
 
-        {/* মোবাইল ভিউর জন্য ডান পাশের ছোট প্রোফাইল আইকন (মেনু বন্ধ থাকলেও যেন চেনা যায় ইউজার লগইন কিনা) */}
+ 
         {user && (
           <div className="md:hidden flex items-center gap-2">
             <Avatar
@@ -115,7 +108,7 @@ function Navbar() {
 
       </header>
 
-      {/* মোবাইল ড্রপডাউন মেনু */}
+   
       {isMenuOpen && (
         <div className="border-t border-white/10 bg-[#b06a44] md:hidden">
           <ul className="flex flex-col gap-2 p-4 font-medium">
@@ -135,7 +128,7 @@ function Navbar() {
               </Link>
             </li>
 
-            {/* মোবাইল ইউজারদের কন্ডিশনাল বাটন লজিক */}
+     
             <li className="border-t border-white/10 pt-4 mt-2">
               {user ? (
                 <div className="flex flex-col gap-3">
